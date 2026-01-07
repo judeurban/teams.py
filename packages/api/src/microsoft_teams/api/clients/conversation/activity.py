@@ -33,7 +33,9 @@ class ConversationActivityClient(BaseClient):
             api_client_settings: Optional API client settings.
         """
         super().__init__(http_client, api_client_settings)
-        self.service_url = service_url
+        # Strip trailing slash to prevent double-slash URLs (e.g., serviceUrl//v3/...)
+        # Azure Bot Framework sometimes sends serviceUrl with trailing slash
+        self.service_url = service_url.rstrip("/") if service_url else service_url
 
     async def create(self, conversation_id: str, activity: ActivityParams) -> SentActivity:
         """
